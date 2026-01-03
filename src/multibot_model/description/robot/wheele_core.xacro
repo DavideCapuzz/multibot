@@ -56,30 +56,30 @@
     <!-- MACRO FOR THE WHEELS -->
 
     <xacro:macro name="wheel" params="prefix reflect_x reflect_y">
-
+        <xacro:property name="pose_wheel" value="0 0 0"/>
+        <xacro:property name="orientation_wheel" value="0 0 ${pi/2 + reflect_y * pi/2}"/>
         <joint name="base_to_${prefix}_wheel" type="continuous">
             <parent link="chassis"/>
             <child link="${prefix}_wheel"/>
             <origin xyz="${reflect_x * wheelbase_length/2} ${reflect_y * track/2} 0" rpy="0 ${pi/2} ${pi/2}"/>
             <axis xyz="0 1 0"/>
         </joint>
-
         <link name="${prefix}_wheel">
             <visual>
                 <geometry>
                     <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
                 </geometry>
-                <origin xyz="0 0 0" rpy="0 0 ${pi/2 + reflect_y * pi/2}"/>
+                <origin xyz="0 0 0" rpy="${orientation_wheel}"/>
                 <material name="white"/>
             </visual>
             <collision>
                 <geometry>
                     <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
                 </geometry>
-                <origin xyz="0 0 0" rpy="0 0 ${pi/2 + reflect_y * pi/2}"/>
+                <origin xyz="0 0 0" rpy="${orientation_wheel}"/>
             </collision>
             <xacro:inertial_cylinder mass="${wheel_mass}" length="${wheel_thickness}" radius="${wheel_radius}">
-                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <origin xyz="0 0 0" rpy="${orientation_wheel}"/>
             </xacro:inertial_cylinder>
         </link>
 
@@ -89,20 +89,17 @@
     </xacro:macro>
 
     <!-- BASE LINK -->
+    <link name="base_link"/>
     <link name="base_footprint"/>
 
     <!-- BASE_FOOTPRINT LINK -->
-
     <joint name="base_footprint_joint" type="fixed">
         <child link="base_footprint"/>
         <parent link="base_link"/>
         <origin xyz="0 0 0" rpy="0 0 0"/>
     </joint>
 
-    <link name="base_link"/>
-
     <!-- CHASSIS LINK -->
-
     <joint name="chassis_joint" type="fixed">
         <parent link="base_link"/>
         <child link="chassis"/>
@@ -148,8 +145,6 @@
     </link>
 
     <!-- Swivel -->
-
-    <!--                xyz="${wheelbase_length/2} 0 ${caster_wheel_radius*2}"-->
     <joint name="caster_yaw_joint" type="continuous">
         <parent link="chassis"/>
         <child  link="caster_yaw_link"/>
