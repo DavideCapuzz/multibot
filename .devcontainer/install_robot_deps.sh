@@ -120,6 +120,9 @@ install_perception_packages() {
 # ============================================================================
 install_custom_libraries() {
     echo "Nothing To install"
+    apt-get update && apt-get install -y \
+    python3-path \
+    && rm -rf /var/lib/apt/lists/*
 }
 
 # ============================================================================

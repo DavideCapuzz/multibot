@@ -4,9 +4,9 @@
     <xacro:include filename="wheele_core.xacro" />
     <xacro:include filename="macros_gazebo_control.xacro" />
 
-<!--    <xacro:include filename="gazebo_sensors/lidar.xacro" />-->
-<!--    <xacro:include filename="gazebo_sensors/gps.xacro" />-->
-<!--    <xacro:include filename="gazebo_sensors/imu.xacro" />-->
+    <xacro:include filename="gazebo_sensors/lidar.xacro" />
+    <xacro:include filename="gazebo_sensors/gps.xacro" />
+    <xacro:include filename="gazebo_sensors/imu.xacro" />
 <!--    <xacro:include filename="gazebo_sensors/collision_sensor.xacro" />-->
 <!--    <xacro:include filename="gazebo_sensors/camera.xacro" />-->
 <!--    <xacro:include filename="gazebo_sensors/lidarAS.xacro" />-->

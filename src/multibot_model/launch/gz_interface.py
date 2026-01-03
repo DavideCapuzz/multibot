@@ -22,7 +22,7 @@ from launch_ros.substitutions import FindPackageShare
 from ros_gz_bridge.actions import RosGzBridge
 import xml.etree.ElementTree as ET
 import yaml
-# import Path
+from pathlib import Path
 
 def local(tag: str) -> str:
     # Strip namespace: "{ns}tag" -> "tag"
@@ -98,10 +98,11 @@ def generate_launch_description():
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')),
-        launch_arguments={'gz_args': world_file_updated + ' -r --render-engine ogre', 'on_exit_shutdown': 'true'}.items(),
-        # launch_arguments={'gz_args': world_file_updated + ' -r -v 4 --render-engine ogre', 'on_exit_shutdown': 'true'}.items(),
+        # launch_arguments={'gz_args': world_file_updated + ' -r --render-engine ogre', 'on_exit_shutdown': 'true'}.items(),
+        launch_arguments={'gz_args': world_file_updated + ' -r -v 4 --render-engine ogre', 'on_exit_shutdown': 'true'}.items(),
     )
-    model_name = 'bot1'
+    # model_name = 'bot1'
+    model_name= os.getenv('ROBOT_NAME')
     world_name = 'setup_room'
     spawn = Node(package='ros_gz_sim', executable='create',
                  arguments=[
@@ -126,7 +127,9 @@ def generate_launch_description():
     # joint_state_gz_topic = '/world/map' + gz_topic + '/joint_state'
     joint_state_gz_topic = '/world/' + world_name + '/model/' + model_name + '/joint_state'
     link_pose_gz_topic = gz_topic + '/pose'
-    
+    topic_nav = "/world/base_world/model/bot1/link/base_footprint/sensor/navsat/navsat"
+    topic_imu = "/world/base_world/model/bot1/link/base_footprint/sensor/imu_sensor/imu"
+
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
@@ -135,17 +138,18 @@ def generate_launch_description():
             '/model/bot1/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
             '/model/bot1/odometry@nav_msgs/msg/Odometry@gz.msgs.Odometry',
             '/model/bot1/tf@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V',
-            # '/model/bot1/tf_static@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V',
-            '/world/base_world/model/bot1/joint_state@sensor_msgs/msg/JointState@gz.msgs.Model',
+            '/world/base_world/model/bot1/joint_state@sensor_msgs/msg/JointState[gz.msgs.Model',
+            f'{topic_imu}@sensor_msgs/msg/Imu[gz.msgs.IMU',
+            f'{topic_nav}@sensor_msgs/msg/NavSatFix[gz.msgs.NavSat',
         ],
         remappings=[
             ('/model/bot1/odometry', '/odom'),
             ('/model/bot1/tf', '/tf'),
-            # ('/model/bot1/tf_static', '/tf_static'),
             ('/world/base_world/model/bot1/joint_state', '/joint_states'),
+            (topic_nav, '/navsat'),
+            (topic_imu, '/imu'),
         ],
         parameters=[{'use_sim_time': True}],
-        # parameters=[{'qos_overrides./tf_static.publisher.durability': 'transient_local'}],
         output='screen'
     )
 
@@ -162,7 +166,7 @@ def generate_launch_description():
         set_render_engine,      # First
         set_software_gl,        # Second
         set_mesa_override,
-        static_map_tf_node,
+        # static_map_tf_node,
         # gz_interface,
         bridge,
         gazebo,
