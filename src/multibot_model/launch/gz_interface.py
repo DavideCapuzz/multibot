@@ -133,17 +133,19 @@ def generate_launch_description():
         arguments=[
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
             '/model/bot1/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
+            '/model/bot1/odometry@nav_msgs/msg/Odometry@gz.msgs.Odometry',
+            '/model/bot1/tf@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V',
+            # '/model/bot1/tf_static@tf2_msgs/msg/TFMessage@gz.msgs.Pose_V',
+            '/world/base_world/model/bot1/joint_state@sensor_msgs/msg/JointState@gz.msgs.Model',
         ],
         remappings=[
-            # ('/model/wheele/odometry', '/ground_truth/odom'),
-            # ('/model/wheele/pose', '/ground_truth/pose'),
-            # (joint_state_gz_topic, 'joint_states'),
-            # (link_pose_gz_topic, '/tf'),
-            # (link_pose_gz_topic + '_static', '/tf_static'),
-            #('vehicle/vehicle/LidarCircular/vehicle/LidarCircularSensor', 'laser'),
-            #('/model/base_link/odometry', '/odom')
+            ('/model/bot1/odometry', '/odom'),
+            ('/model/bot1/tf', '/tf'),
+            # ('/model/bot1/tf_static', '/tf_static'),
+            ('/world/base_world/model/bot1/joint_state', '/joint_states'),
         ],
-        parameters=[{'qos_overrides./tf_static.publisher.durability': 'transient_local'}],
+        parameters=[{'use_sim_time': True}],
+        # parameters=[{'qos_overrides./tf_static.publisher.durability': 'transient_local'}],
         output='screen'
     )
 

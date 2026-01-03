@@ -60,7 +60,7 @@ def generate_launch_description():
     rviz = Node(
         package='rviz2',
         executable='rviz2',
-        arguments=['-d', './vehicle_mini.rviz'],
+        arguments=['-d', './launch/vehicle_mini.rviz'],
         #arguments=['-d', os.path.join(pkg_ros_gz_sim_wheele,  'rviz', 'vehicle.rviz')],
         condition=IfCondition(LaunchConfiguration('rviz')),
         parameters=[
@@ -85,9 +85,9 @@ def generate_launch_description():
     # Launch!
     return LaunchDescription([
         node_robot_state_publisher,
-        # rviz_launch_arg,
-        use_sim_time_launch_arg
-        # rviz
+        rviz_launch_arg,
+        use_sim_time_launch_arg,
+        rviz
         # static_laser_tf_node,
         # static_camera_tf_node
     ])

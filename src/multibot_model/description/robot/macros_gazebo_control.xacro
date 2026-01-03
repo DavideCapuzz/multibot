@@ -39,24 +39,24 @@
         <!-- Joint State Publisher -->
         <!--official documentation-->
         <!--https://gazebosim.org/api/sim/8/classgz_1_1sim_1_1systems_1_1JointStatePublisher.html-->
-<!--        <plugin filename="gz-sim-joint-state-publisher-system"-->
-<!--                name="gz::sim::systems::JointStatePublisher">-->
-<!--&lt;!&ndash;            <joint_name>left_wheel_joint</joint_name>&ndash;&gt;-->
-<!--&lt;!&ndash;            <joint_name>right_wheel_joint</joint_name>&ndash;&gt;-->
-<!--&lt;!&ndash;            <joint_name>caster_yaw_joint</joint_name>&ndash;&gt;-->
-<!--&lt;!&ndash;            <joint_name>caster_wheel_joint</joint_name>&ndash;&gt;-->
-<!--        </plugin>-->
+        <plugin filename="gz-sim-joint-state-publisher-system"
+                name="gz::sim::systems::JointStatePublisher">
+            <joint_name>chassis_rear_left_wheel</joint_name>
+            <joint_name>chassis_rear_right_wheel</joint_name>
+            <joint_name>caster_yaw_joint</joint_name>
+            <joint_name>caster_wheel_joint</joint_name>
+        </plugin>
 
         <!-- Pose Publisher (optional, for debugging) -->
-<!--        <plugin filename="gz-sim-pose-publisher-system"-->
-<!--                name="gz::sim::systems::PosePublisher">-->
-<!--            <publish_link_pose>true</publish_link_pose>-->
-<!--            <publish_collision_pose>false</publish_collision_pose>-->
-<!--            <publish_visual_pose>false</publish_visual_pose>-->
-<!--            <publish_nested_model_pose>false</publish_nested_model_pose>-->
-<!--            <use_pose_vector_msg>true</use_pose_vector_msg>-->
-<!--            <update_frequency>50</update_frequency>-->
-<!--        </plugin>-->
+        <plugin filename="gz-sim-pose-publisher-system"
+                name="gz::sim::systems::PosePublisher">
+            <publish_link_pose>true</publish_link_pose>
+            <publish_collision_pose>false</publish_collision_pose>
+            <publish_visual_pose>false</publish_visual_pose>
+            <publish_nested_model_pose>false</publish_nested_model_pose>
+            <use_pose_vector_msg>true</use_pose_vector_msg>
+            <update_frequency>50</update_frequency>
+        </plugin>
 
     </gazebo>
 
