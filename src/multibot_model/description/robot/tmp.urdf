@@ -60,7 +60,7 @@
   <gazebo reference="chassis">
     <material>Gazebo/Orange</material>
   </gazebo>
-  <joint name="base_to_rear_right_wheel" type="continuous">
+  <joint name="chassis_rear_right_wheel" type="continuous">
     <parent link="chassis"/>
     <child link="rear_right_wheel"/>
     <origin rpy="0 1.5707963267948966 1.5707963267948966" xyz="-0.15 0.1925 0"/>
@@ -89,7 +89,7 @@
   <gazebo reference="rear_right_wheel">
     <material>Gazebo/Blue</material>
   </gazebo>
-  <joint name="base_to_rear_left_wheel" type="continuous">
+  <joint name="chassis_rear_left_wheel" type="continuous">
     <parent link="chassis"/>
     <child link="rear_left_wheel"/>
     <origin rpy="0 1.5707963267948966 1.5707963267948966" xyz="-0.15 -0.1925 0"/>
@@ -164,51 +164,58 @@
     <mu1>0.6</mu1>
     <mu2>0.6</mu2>
   </gazebo>
-  <!--    <gazebo>-->
-  <!--        &lt;!&ndash; Differential Drive Plugin &ndash;&gt;-->
-  <!--        <plugin filename="gz-sim-diff-drive-system"-->
-  <!--                name="gz::sim::systems::DiffDrive">-->
-  <!--            &lt;!&ndash; Match the joint names from wheele_core.xacro &ndash;&gt;-->
-  <!--            <left_joint>left_wheel_joint</left_joint>-->
-  <!--            <right_joint>right_wheel_joint</right_joint>-->
-  <!--            &lt;!&ndash; Match actual robot dimensions &ndash;&gt;-->
-  <!--            <wheel_separation>${0.3 + 0.085}</wheel_separation>  &lt;!&ndash; track width &ndash;&gt;-->
-  <!--            <wheel_radius>0.07</wheel_radius>-->
-  <!--            &lt;!&ndash; Control parameters &ndash;&gt;-->
-  <!--            <odom_publish_frequency>50</odom_publish_frequency>-->
-  <!--            <max_linear_acceleration>1.0</max_linear_acceleration>-->
-  <!--            <min_linear_acceleration>-1.0</min_linear_acceleration>-->
-  <!--            <max_angular_acceleration>2.0</max_angular_acceleration>-->
-  <!--            <min_angular_acceleration>-2.0</min_angular_acceleration>-->
-  <!--            <max_linear_velocity>0.5</max_linear_velocity>-->
-  <!--            <min_linear_velocity>-0.5</min_linear_velocity>-->
-  <!--            <max_angular_velocity>1.0</max_angular_velocity>-->
-  <!--            <min_angular_velocity>-1.0</min_angular_velocity>-->
-  <!--            &lt;!&ndash; Topic configuration &ndash;&gt;-->
-  <!--            <topic>cmd_vel</topic>-->
-  <!--            <odom_topic>odom</odom_topic>-->
-  <!--            <frame_id>odom</frame_id>-->
-  <!--            <child_frame_id>base_footprint</child_frame_id>-->
-  <!--        </plugin>-->
-  <!--        &lt;!&ndash; Joint State Publisher &ndash;&gt;-->
-  <!--        <plugin filename="gz-sim-joint-state-publisher-system"-->
-  <!--                name="gz::sim::systems::JointStatePublisher">-->
-  <!--            <joint_name>left_wheel_joint</joint_name>-->
-  <!--            <joint_name>right_wheel_joint</joint_name>-->
-  <!--            <joint_name>caster_yaw_joint</joint_name>-->
-  <!--            <joint_name>caster_wheel_joint</joint_name>-->
-  <!--        </plugin>-->
-  <!--        &lt;!&ndash; Pose Publisher (optional, for debugging) &ndash;&gt;-->
-  <!--        <plugin filename="gz-sim-pose-publisher-system"-->
-  <!--                name="gz::sim::systems::PosePublisher">-->
-  <!--            <publish_link_pose>true</publish_link_pose>-->
-  <!--            <publish_collision_pose>false</publish_collision_pose>-->
-  <!--            <publish_visual_pose>false</publish_visual_pose>-->
-  <!--            <publish_nested_model_pose>false</publish_nested_model_pose>-->
-  <!--            <use_pose_vector_msg>true</use_pose_vector_msg>-->
-  <!--            <update_frequency>50</update_frequency>-->
-  <!--        </plugin>-->
-  <!--    </gazebo>-->
+  <gazebo>
+    <!-- Differential Drive Plugin -->
+    <!--official documentation-->
+    <!--https://gazebosim.org/api/sim/8/classgz_1_1sim_1_1systems_1_1DiffDrive.html-->
+    <!--this Plugin will publish those topics-->
+    <!--/model/bot1/odometry    publisher   gz.msgs.Odometry-->
+    <!--/model/bot1/tf          publisher   gz.msgs.Pose_V      publish the transform from frame_id to child_frame_id-->
+    <!--/model/bot1/cmd_vel     subscriber  gz.msgs.Twist    -->
+    <!--/model/bot1/enable      subscriber  gz.msgs.Boolean-->
+    <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+      <left_joint>chassis_left_wheel</left_joint>
+      <right_joint>chassis_right_wheel</right_joint>
+      <wheel_separation>0.385</wheel_separation>
+      <!-- track width -->
+      <wheel_radius>0.08</wheel_radius>
+      <!-- Control parameters -->
+      <!--            <odom_publish_frequency>50</odom_publish_frequency>-->
+      <!--            <max_linear_acceleration>1.0</max_linear_acceleration>-->
+      <!--            <min_linear_acceleration>-1.0</min_linear_acceleration>-->
+      <!--            <max_angular_acceleration>2.0</max_angular_acceleration>-->
+      <!--            <min_angular_acceleration>-2.0</min_angular_acceleration>-->
+      <!--            <max_linear_velocity>0.5</max_linear_velocity>-->
+      <!--            <min_linear_velocity>-0.5</min_linear_velocity>-->
+      <!--            <max_angular_velocity>1.0</max_angular_velocity>-->
+      <!--            <min_angular_velocity>-1.0</min_angular_velocity>-->
+      <!-- Topic configuration -->
+      <!--            <topic>cmd_vel</topic>-->
+      <!--            <odom_topic>odom</odom_topic>-->
+      <!--            @todo tbd if neccessary-->
+      <frame_id>odom</frame_id>
+      <child_frame_id>base_footprint</child_frame_id>
+    </plugin>
+    <!-- Joint State Publisher -->
+    <!--official documentation-->
+    <!--https://gazebosim.org/api/sim/8/classgz_1_1sim_1_1systems_1_1JointStatePublisher.html-->
+    <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+      <!--            <joint_name>left_wheel_joint</joint_name>-->
+      <!--            <joint_name>right_wheel_joint</joint_name>-->
+      <!--            <joint_name>caster_yaw_joint</joint_name>-->
+      <!--            <joint_name>caster_wheel_joint</joint_name>-->
+    </plugin>
+    <!-- Pose Publisher (optional, for debugging) -->
+    <!--        <plugin filename="gz-sim-pose-publisher-system"-->
+    <!--                name="gz::sim::systems::PosePublisher">-->
+    <!--            <publish_link_pose>true</publish_link_pose>-->
+    <!--            <publish_collision_pose>false</publish_collision_pose>-->
+    <!--            <publish_visual_pose>false</publish_visual_pose>-->
+    <!--            <publish_nested_model_pose>false</publish_nested_model_pose>-->
+    <!--            <use_pose_vector_msg>true</use_pose_vector_msg>-->
+    <!--            <update_frequency>50</update_frequency>-->
+    <!--        </plugin>-->
+  </gazebo>
   <!--    <xacro:include filename="gazebo_sensors/lidar.xacro" />-->
   <!--    <xacro:include filename="gazebo_sensors/gps.xacro" />-->
   <!--    <xacro:include filename="gazebo_sensors/imu.xacro" />-->

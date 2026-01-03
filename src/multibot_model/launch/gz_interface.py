@@ -22,6 +22,7 @@ from launch_ros.substitutions import FindPackageShare
 from ros_gz_bridge.actions import RosGzBridge
 import xml.etree.ElementTree as ET
 import yaml
+# import Path
 
 def local(tag: str) -> str:
     # Strip namespace: "{ns}tag" -> "tag"
@@ -67,6 +68,12 @@ def modify_world_file(pkg_path, world_file, config_file):
     world_tree.write(world_file_updated, encoding='utf-8', xml_declaration=True)
     return world_file_updated
 
+def get_current_pkg_share():
+    p = Path(__file__).resolve()
+    while p.name != 'share':
+        p = p.parent
+    return p.parent / p.parent.name
+
 def generate_launch_description():
     set_render_engine = SetEnvironmentVariable('GZ_SIM_RENDER_ENGINE', 'ogre')
     set_software_gl = SetEnvironmentVariable('LIBGL_ALWAYS_SOFTWARE', '1')
@@ -78,10 +85,11 @@ def generate_launch_description():
         default_value='false',
         description='Use sim time if true')
 
+    # pkg_path = str(get_current_pkg_share())
     pkg_path = os.path.join(get_package_share_directory("multibot_model"))
     world_file = os.path.join(pkg_path,'worlds','world.sdf')
 
-    with open(os.path.join(pkg_path, 'config', 'sim_setup_empty.yaml'), 'r') as file:
+    with open(os.path.join(pkg_path, 'config', 'sim_setup.yaml'), 'r') as file:
         config_file = yaml.safe_load(file)
     world_file_updated = modify_world_file(pkg_path, world_file, config_file)
 
@@ -124,7 +132,7 @@ def generate_launch_description():
         executable='parameter_bridge',
         arguments=[
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
-            # '/model/bot1/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist'
+            '/model/bot1/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
         ],
         remappings=[
             # ('/model/wheele/odometry', '/ground_truth/odom'),

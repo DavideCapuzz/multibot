@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro"  name="bot1">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"  name="$(env ROBOT_NAME)">
 
     <xacro:include filename="wheele_core.xacro" />
     <xacro:include filename="macros_gazebo_control.xacro" />

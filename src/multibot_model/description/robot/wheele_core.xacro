@@ -58,11 +58,11 @@
     <xacro:macro name="wheel" params="prefix reflect_x reflect_y">
         <xacro:property name="pose_wheel" value="0 0 0"/>
         <xacro:property name="orientation_wheel" value="0 0 ${pi/2 + reflect_y * pi/2}"/>
-        <joint name="base_to_${prefix}_wheel" type="continuous">
+        <joint name="chassis_${prefix}_wheel" type="continuous">
             <parent link="chassis"/>
             <child link="${prefix}_wheel"/>
             <origin xyz="${reflect_x * wheelbase_length/2} ${reflect_y * track/2} 0" rpy="0 ${pi/2} ${pi/2}"/>
-            <axis xyz="0 1 0"/>
+            <axis xyz="0 0 1"/>
         </joint>
         <link name="${prefix}_wheel">
             <visual>
@@ -188,8 +188,8 @@
     </joint>
 
     <gazebo reference="caster">
-        <mu1>0.6</mu1>
-        <mu2>0.6</mu2>
+        <mu1>0.01</mu1>
+        <mu2>0.01</mu2>
     </gazebo>
 
 </robot>
