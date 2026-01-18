@@ -25,13 +25,21 @@ from launch.actions import SetEnvironmentVariable
 from launch.actions import TimerAction
 
 def generate_launch_description():
+    world = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            os.path.join(
+                get_package_share_directory('multibot_model'), 'launch'),
+            '/launch_world.py'
+        ])
+    )
+
     gz_interface = IncludeLaunchDescription(
-      PythonLaunchDescriptionSource([
-          os.path.join(
-         get_package_share_directory('multibot_model'), 'launch'),
-         '/gz_interface.py'
-      ])
-      )
+        PythonLaunchDescriptionSource([
+            os.path.join(
+                get_package_share_directory('multibot_model'), 'launch'),
+            '/gz_interface.py'
+        ])
+    )
     
     model = IncludeLaunchDescription(
       PythonLaunchDescriptionSource([os.path.join(
@@ -41,6 +49,7 @@ def generate_launch_description():
 
     # for pid in $(ps -ef | grep 'gz' | awk '{print $2}'); do kill -9 $pid; done
     return LaunchDescription([
+        # world,
         gz_interface,
         model
     ])

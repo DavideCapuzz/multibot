@@ -21,35 +21,8 @@ echo "=========================================="
 install_core_packages() {
     echo ">>> Installing Core ROS2 Packages..."
     apt-get update && apt-get install -y \
-        # Build tools
-        python3-colcon-common-extensions \
-        python3-colcon-clean \
-        python3-rosdep \
-        python3-vcstool \
-        ros-dev-tools \
-        # Common messages and interfaces
-        ros-${ROS_DISTRO}-can-msgs \
-        ros-${ROS_DISTRO}-bondcpp \
-        ros-${ROS_DISTRO}-rosbag2-storage-mcap \
-        # Development libraries
-        nlohmann-json3-dev \
-        libsuitesparse-dev \
-        python3-jinja2 \
-        python3-typeguard \
-        # Communication
-        ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
-        && rm -rf /var/lib/apt/lists/*
-}
-
-# ============================================================================
-# GAZEBO & SIMULATION
-# ============================================================================
-install_simulation_packages() {
-    echo ">>> Installing Simulation Packages..."
-    apt-get update && apt-get install -y \
-        ros-${ROS_DISTRO}-ros-gz-sim \
-        ros-${ROS_DISTRO}-ros-gz-bridge \
-        ros-${ROS_DISTRO}-ros-gz-interfaces \
+        python3-path \
+        ros-${ROS_DISTRO}-rviz2 \
         && rm -rf /var/lib/apt/lists/*
 }
 
@@ -116,13 +89,72 @@ install_perception_packages() {
 }
 
 # ============================================================================
+# CERES
+# ============================================================================
+install_ceres_libraries() {
+    echo ">>> Installing Custom Libraries..."
+
+    # Ceres Solver (for SLAM Toolbox)
+    apt-get update && apt-get install -y \
+        build-essential \
+        cmake \
+        git \
+        libgoogle-glog-dev \
+        libgflags-dev \
+        libatlas-base-dev \
+        libeigen3-dev \
+        libsuitesparse-dev \
+        && rm -rf /var/lib/apt/lists/*
+
+    echo "Building Ceres Solver..."
+    cd /opt
+    if [ ! -d "ceres-solver" ]; then
+        git clone https://github.com/ceres-solver/ceres-solver.git
+        cd ceres-solver
+        git checkout 2.2.0
+        mkdir -p build && cd build
+        cmake .. \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTING=OFF \
+            -DBUILD_EXAMPLES=OFF \
+            -DSUITESPARSE=ON \
+            -DMINIGLOG=OFF \
+            -DGFLAGS=ON
+        make -j$(nproc)
+        make install
+        cd /opt && rm -rf ceres-solver
+    else
+        echo "Ceres already installed, skipping..."
+    fi
+}
+
+# ============================================================================
+# Gazebo
+# ============================================================================
+install_gazebo_bridge_libraries() {
+    echo ">>> Installing Custom Libraries..."
+    ## Gazebo
+    apt-get update && apt-get install -y \
+        ros-${ROS_DISTRO}-ros-gz-bridge \
+        ros-${ROS_DISTRO}-ros-gz-sim \
+        ros-${ROS_DISTRO}-xacro \
+        && rm -rf /var/lib/apt/lists/*
+}
+
+# ============================================================================
 # CUSTOM LIBRARIES (Ceres, etc.)
 # ============================================================================
 install_custom_libraries() {
-    echo "Nothing To install"
+    echo ">>> Installing Custom Libraries..."
     apt-get update && apt-get install -y \
-    python3-path \
     && rm -rf /var/lib/apt/lists/*
+}
+
+# ============================================================================
+# DEFAULT
+# ============================================================================
+install_default_libraries() {
+    echo "not installing anything"
 }
 
 # ============================================================================
@@ -157,7 +189,17 @@ case "${PROFILE}" in
         ;;
 
     custom)
+        install_core_packages
         install_custom_libraries
+        install_gazebo_bridge_libraries
+        ;;
+
+    gazebo)
+        install_gazebo_bridge_libraries
+        ;;
+
+    default)
+        install_default_libraries
         ;;
 
     *)
